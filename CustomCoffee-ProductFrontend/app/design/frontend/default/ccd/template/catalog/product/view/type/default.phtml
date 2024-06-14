@@ -1,0 +1,75 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php /* @var $this Mage_Catalog_Block_Product_View_Abstract */ ?>
+<?php $buttonTitle = "Add to Cart";?>
+<?php $_product = $this->getProduct() ?>
+<?php $product_id = $_product->getId() ?>
+<?php $category = $_product->getCategoryId(); ?>
+<?php if($category > 52 && $category < 56 ): ?>
+<?php echo 'Denomination - Minimum INR 250' . $this->getPriceHtml($_product) ?>
+
+
+ <?php if (!$this->hasOptions()):?>
+<div class="b_l">
+                <div class="b_r">
+                    <a href="<?php echo $this->helper('checkout/cart')->getAddUrl($_product).'?product='. $product_id .'&custom_price_total='. 250 ?>" class="popup" id='custom-cart' ><div class="b_t">add to cart</div></a>
+                </div>
+             </div>
+
+<!--<button type="button" title="<?php echo $buttonTitle ?>" class="button btn-cart popup" onclick="productAddToCartForm.submit(this)"><span><span><?php echo $buttonTitle ?></span></span></button>-->
+<?php endif; ?>
+<?php endif; ?>
+<?php if ($_product->isAvailable()): ?>
+<?php if(($category == 87)||($category == 88)): ?>
+    <p class="availability in-stock"><span><?php echo $this->__('In stock* &nbsp&nbsp') ?></span></p>
+<?php else: ?>
+    <p class="availability in-stock"><span><?php echo $this->__('In stock &nbsp&nbsp Ships In 7 Working Days*') ?></span></p>
+<?php endif; ?>    
+<?php else: ?>
+    <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+<?php endif; ?>
+<?php echo $this->getChildHtml('product_type_data_extra') ?>
+
+<script type="text/javascript">
+    jQuery(document).ready(function()
+    {
+      jQuery("#custom-cart").click(function()
+      {
+      var price = jQuery('input[name=custom_price]').val();
+      
+      if(price < 250 || isNaN(price)){
+          window.alert("Please enter minimum amount Rs. 250");
+          return false;
+      }
+      else{
+      var href=jQuery(this).attr("href")+"&custom_price="+price;
+      jQuery(this).attr("href",href);
+      }
+    });
+
+    });
+</script>

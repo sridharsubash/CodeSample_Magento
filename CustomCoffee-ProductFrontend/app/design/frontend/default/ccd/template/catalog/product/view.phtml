@@ -1,0 +1,464 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_modern
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+
+/**
+ * Product view template
+ *<?php echo $this->helper('checkout/cart')->getAddUrl($_product); ?>
+ * @see Mage_Catalog_Block_Product_View
+ * @see Mage_Review_Block_Product_View
+ */
+?>
+<script type="text/javascript">
+  jQuery.noConflict();
+	jQuery(document).ready(function( ){
+		var slider_count =jQuery(".slideul1 li").length;
+		var slider_slides = Math.ceil(slider_count/3);
+		//console.log("TOTAL SLIDES: "+slider_slides);
+		//console.log("LI COUNT: "+slider_count);
+		var slider_li_width = 100;
+		var total_width = slider_count * slider_li_width;
+		var slide_to = 299;
+		jQuery(".slideul1").css("width",total_width+"px");
+		var current_slide = 1;
+		var next_slide;
+		jQuery("#next").click(function(e){
+			e.preventDefault();
+			//console.log("CLICKED");
+			if(current_slide < slider_slides){
+				//Move
+				//console.log("MOVE");
+				next_slide = current_slide*slide_to;
+				//$("#slideul1").css("left","-"+next_slide+"px");
+				jQuery(".slideul1").animate({"left":"-"+next_slide+"px"},{duration:500});
+				current_slide++;
+			}else{
+        //Nothing
+      }
+		});
+		jQuery("#prev").click(function(e){
+			e.preventDefault();
+			//console.log("CLICKED");
+			if(current_slide != 1){
+				//Move
+				//console.log("MOVE");
+				//console.log("NEXT SLIDE: "+next_slide);
+				var prev_slide = next_slide - slide_to;
+				//$("#slideul1").css("left","-"+next_slide+"px");
+				var cstate = '-';
+				if(parseInt(prev_slide) <=0){
+					cstate = '';
+				}
+				jQuery(".slideul1").animate({"left":cstate+prev_slide+"px"},{duration:500});
+				current_slide--;
+				next_slide = prev_slide;
+			}else{
+				//Nothing
+			}
+		});
+
+	});
+</script>
+<script type="text/javascript">
+  jQuery.noConflict();
+	jQuery(document).ready(function( ){
+		var slider_count =jQuery(".videoul li").length;
+		var slider_slides = Math.ceil(slider_count/3);
+		var slider_li_width = 100;
+		var total_width = slider_count * slider_li_width;
+		var slide_to = 299;
+		jQuery(".videoul").css("width",total_width+"px");
+		var current_slide = 1;
+		var next_slide;
+		jQuery("#video_next").click(function(e){
+			e.preventDefault();
+			//console.log("CLICKED");
+			if(current_slide < slider_slides){
+				//Move
+				//console.log("MOVE");
+				next_slide = current_slide*slide_to;
+				//$("#slideul1").css("left","-"+next_slide+"px");
+				jQuery(".videoul").animate({"left":"-"+next_slide+"px"},{duration:500});
+				current_slide++;
+			}else{
+        //Nothing
+      }
+		});
+		jQuery("#video_prev").click(function(e){
+			e.preventDefault();
+			//console.log("CLICKED");
+			if(current_slide != 1){
+				var prev_slide = next_slide - slide_to;
+				var cstate = '-';
+				if(parseInt(prev_slide) <=0){
+					cstate = '';
+				}
+				jQuery(".videoul").animate({"left":cstate+prev_slide+"px"},{duration:500});
+				current_slide--;
+				next_slide = prev_slide;
+			}else{
+				//Nothing
+			}
+		});
+
+	});
+</script>
+
+<?php   
+  $current_category_id_array = Mage::registry('current_product')->getCategoryIds();
+  $current_category_id = end($current_category_id_array);
+  if($current_category_id == 37 || $current_category_id == 38){
+?>
+<script type="text/javascript">
+  jQuery.noConflict();
+	jQuery(document).ready(function( $ ){
+    jQuery('#tshirt_size').validate({ 
+        rules: {
+            tshirst_size: {
+              required: true
+            },
+        messages :{
+            required: "Please select size"
+        }
+        }
+    });
+  });
+</script>
+  <?php  } ?>
+<?php $_helper = $this->helper('catalog/output'); ?>
+<?php $_product = $this->getProduct(); ?>
+<script type="text/javascript">
+    var optionsPrice = new Product.OptionsPrice(<?php echo $this->getJsonConfig() ?>);
+</script>
+<?php 
+$quote = Mage::getSingleton('checkout/session')->getQuote(); 
+$items = $quote->getAllVisibleItems();
+$isProductInCart = false;
+foreach($items as $_item) {
+
+    if($_item->getProductId() == $_product->getId()){
+        $isProductInCart = true;
+        break;
+    }
+}
+?>
+<div style="background-color: #f4f3ef;float:left;width:100%;">
+<div id="messages_product_view"><?php echo $this->getMessagesBlock()->getGroupedHtml() ?></div>
+<div class="width1050inside">
+    <div style="float:left; width:520px; margin-right:5px;">
+        <div class="productViewLeft" style="width:500px;min-height: 400px;">
+            <?php echo $this->getChildHtml('media') ?>
+        </div>
+        <div id="payment_option">
+
+    <div class="payment_box">
+      <div class="top_two">
+        <div class="payment_header">payment option</div>
+        <div class="payment_middle"><img src="<?php echo $this->getSkinUrl('images/payment-option.jpg') ?>"></div> 
+       </div>
+    </div>
+    
+    <div class="payment_box_two">
+      <div class="top_two">
+        <div class="payment_header">shipping</div>
+        <div class="payment_middle"><img src="<?php echo $this->getSkinUrl('images/free-delivery.jpg') ?>"></div>
+      </div>
+    </div>
+    
+    <div class="payment_box_three">
+      <div class="top_two">
+        <div class="payment_header">secured by</div>
+        <div class="payment_middle">
+            <div id="thawteseal" style="text-align:center;margin-top: 6px;" title="Click to Verify - This site chose Thawte SSL for secure e-commerce and confidential communications.">
+                <div><script type="text/javascript" src="https://seal.thawte.com/getthawteseal?host_name=shop.cafecoffeeday.com&amp;size=L&amp;lang=en"></script></div>
+            </div>		
+	</div>
+      </div>
+    </div>
+    <p class="clear_both"></p>
+	<div class="payment_footer">
+    	<span>CUSTOMER CARE <span> 1860 425 3399 </span><span style="padding-left: 20px;">  9.30AM – 6.00PM [Monday – Saturday]</span></span>
+    </div>
+</div>   
+</div>
+    <div class="productdetailRight">
+        <!--<a class="bakBtn" href="<?php // echo preg_replace('(script|form|alert|document|domain|alert|%|>|<|)', "", $_SERVER['HTTP_REFERER']); ?>">-->
+	 <a class="bakBtn" href="<?php echo $_SERVER['HTTP_REFERER']; ?>">		
+            <img src="<?php echo $this->getSkinUrl('images/back-btn.png') ?>"></a>
+        <p class="clearBoth"></p>
+        <div class="rightSection">
+        
+    <form action="<?php echo $this->getSubmitUrl($_product) ?>" method="POST" id="product_addtocart_form"<?php if($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+        <div class="no-display">
+            <input type="hidden" name="product" value="<?php echo $_product->getId() ?>" />
+            <input type="hidden" name="related_product" id="related-products-field" value="" />
+        </div>
+
+        <div class="product-shop">
+            <div class="product-name">
+                <h1 class="borderBottom"><?php echo $this->htmlEscape($_helper->productAttribute($_product, $_product->getName(), 'name')) ?></h1>
+            </div>
+             <?php if ($_product->getShortDescription()):?>
+            <div class="borderBottom">
+                <p itemprop="description"></p>
+               
+                <p><?php echo $content=strip_tags($_helper->productAttribute($_product, nl2br($_product->getShortDescription()), 'short_description'), '<p></p><b></b><a></a><br/><strong></strong>') ?></p>
+                
+            </div>
+            <?php endif;?> 
+            
+                <?php //echo $this->getChildHtml('info_tabs') ?>
+                <?php //echo $this->getChildHtml('product_additional_data') ?>
+
+            
+             <div class="clearer"></div>
+            <?php if ($_product->isSaleable() && $this->hasOptions()):?>
+                <?php echo $this->getChildChildHtml('container1', '', true, true) ?>
+                <?php echo $this->getChildChildHtml('container2', '', true, true) ?>
+            <?php endif;?>
+            <!--PRICE OF PRODUCT AND ADD TO CART BUTTON-->
+            <?php if(!$this->hasOptions()):?>
+                   <?php if($_product->isSaleable()): ?>              
+             <!--PRICE OF PRODUCT-->
+            <?php $category = $_product->getCategoryId(); ?> 
+            <?php Mage::getSingleton('core/session')->setCat($category); 
+            $attributes = $_product->getAttributes();
+           ?>
+
+            <?php if($current_category_id != 32 && $current_category_id != 33){ ?>
+            <div class="borderBottom" style="float:left;width:100%;"> 
+            <span class="price_bold" style="float:left; background-image:none !important; padding-top: 9px;">PRICE :</span>
+            <span style="padding-top: 9px;float:left;padding-right: 15px;" class="price_bold" itemprop="price"><?php echo $this->htmlEscape('&#8377;') ?><?php echo $this->htmlEscape(number_format($_product->getPrice(), 2, '.', '')) ?></span>
+
+	   <!--ADD TO CART-->
+             <div class="b_l">
+                <div class="b_r">
+                    <a href="<?php echo $this->helper('checkout/cart')->getAddUrl($_product); ?>" class="popup"><div id="locationsearch" class="b_t">add to cart</div></a>			
+                </div>
+             </div>
+            </div>
+            
+            <?php if( $current_category_id == 32 || $current_category_id == 33){ ?>
+            <div class="borderBottom" style="float:left;width:100%;"> 
+            <span class="price_bold" style="float:left; background-image:none !important; padding-top: 9px;">PRICE :</span>
+            <span style="padding-top: 9px;float:left;padding-right: 15px;" class="price_bold" itemprop="price">&#8377;<?php echo $this->htmlEscape(number_format($_product->getPrice(), 2, '.', '')) ?></span>
+
+            <!--ADD TO CART-->
+             <div class="b_l">
+                <div class="b_r">
+                    <a href="<?php echo $this->helper('checkout/cart')->getAddUrl($_product); ?>" class="popup" id="tshirt_size_id"><div class="b_t"><?php echo $this->htmlEscape('add to cart') ?></div></a>
+                </div>
+             </div>
+            </div>  
+            <?php } ?>     
+                        
+	<?php } ?>
+             
+             <!--ADD TO CART ONLY FOR CAKES-->
+             <?php if($current_category_id == 17){ ?>
+            <div class="borderBottom" style="float:left;width:100%;"> 
+            <span class="price_bold" style="float:left; background-image:none !important; padding-top: 9px;">PRICE :</span>
+            <span style="padding-top: 9px;float:left;padding-right: 15px;" class="price_bold" itemprop="price">&#8377;<?php echo number_format($_product->getPrice(), 2, '.', '') ?></span>
+
+            <!--ADD TO CART-->
+             <div class="b_l">
+                <div class="b_r">
+                    <?php if($isProductInCart): ?>
+                        <a href="javascript:;" class="cake-popup" id="cake-popup" onclick="alert('Maximum quantity allowed for purchase cake is 1.')"><div class="b_t">add to cart</div></a>
+                    <?php else: ?>
+                        <a href="<?php echo $this->helper('checkout/cart')->getAddUrl($_product); ?>" class="popup" id="cake-popup"><div class="b_t">add to cart</div></a>
+                    <?php endif; ?>
+                </div>
+             </div>
+            </div>  
+            <?php } ?>       
+             <!--ADD TO CART ONLY FOR CAKES-->
+             
+                   <?php endif; ?>       
+            <?php endif; ?>
+            
+         
+            
+            <!--STOCK INVENTORY DETAILS-->
+            <div class="borderBottom" style="float:left;width:100%;">
+                <div class="sizeSelect"> 
+                    <?php echo $this->getChildHtml('product_type_data') ?>
+                </div>
+            </div> 
+            
+              <!--PINCODE SERVICEABILITY-->
+            <div class="borderBottom" style="float:left;width:100%;">
+                <div class="sizeSelect"> 
+                    <ul class="form-list" style="padding:0;">
+                        <span style="margin-top:10px;"><?php echo $this->__('Check Serviceability') ?></span>
+                        <input type="text" style="width:150px;float:left;margin-right: 10px;" placeholder="Enter your pincode" maxlength="6" size="20" value="" tabindex="2" id="pincode" name="pincode" title="Pincode" class="input-text" onkeydown="if(event.keyCode == 13) {return false;}" />
+                        <div class="bpin_l">
+                        <div class="bpin_r">
+                        <a onclick="check_pincode();"><div id="locationsearch" class="bpin_t">Check</div></a>
+                        </div>
+                        </div>    
+                    </ul>
+                    <div id="error-spn" style="margin-left: 140px;"></div>
+                </div>
+            </div> 
+            
+            <!--PRODUCT REVIEW-->
+<!--             <div class="borderBottom" style="width: 100%;float:left;">
+              <?php // echo $this->getReviewsSummaryHtml($_product, false, true); ?>
+             </div>-->
+            
+                 <?php echo $this->getChildHtml('product_additional_data') ?>
+            
+            <!--SHARE OPTIONS-->
+            <?php if ($this->canEmailToFriend()): ?>
+            <div class="socialIcons borderBottom" style="float:left;width:100%">
+                <?php if($this->helper('facebookfree')->isActiveLike()):?>
+                <div class="fb"><fb:like href="<?php echo $_product->getProductUrl()?>" layout="<?php echo $this->helper('facebookfree')->getLikeLayout()?>" show_faces="<?php echo $this->helper('facebookfree')->isFacesLikeActive()?>" width="<?php echo $this->helper('facebookfree')->getLikeWidth()?>"  colorscheme="<?php echo $this->helper('facebookfree')->getLikeColor()?>"></fb:like></div>
+                <?php endif?>
+                <div class="fb">
+		<a href="//www.facebook.com/sharer/sharer.php?u=<?php echo htmlspecialchars(trim($_product->getProductUrl())); ?>" onclick="return open_share(this);" target="_blank"> 
+                <img src="<?php echo $this->getSkinUrl('images/f-share.png') ?>" alt="Facebook Share" border="0"></a> 
+                </div>                
+                <div class="fb"><a href="//twitter.com/share" class="twitter-share-button" data-count="none" data-via="PUT YOUR TWITTER NAME HERE">Tweet</a></div>    
+                <div class="pinterest" style="float:left;margin-left:10px;"><a href="//pinterest.com/pin/create/button/?media=<?php echo $this->helper('catalog/image')->init($_product, 'small_image'); ?>&description=<?php echo trim(Mage::registry('current_product')->getName()); ?>&url=<?php echo trim(Mage::registry('current_product')->getProductUrl()); ?>" class="pin-it-button" count-layout="none" style="margin-top:-2px" target="_blank"><img src="<?php echo $this->getSkinUrl('images/pinit.png') ?>" width="20" height="20"/></a></div>
+                <div class="email-friend" style="margin-left:10px;float:left;margin-top:3px;"><a href="<?php echo $this->helper('catalog/product')->getEmailToFriendUrl($_product) ?>"><?php echo $this->__('Email') ?></a></div>
+                <br style="clear:both;" />
+            </div>
+            <?php endif; ?>
+                
+                
+          <!--RECOMMENDED PRODUCTS COLLECTION--> 
+           <?php if($this->getChildHtml('related')): ?>             
+          <div class="borderBottom" style="width:100%;float: left;">
+                    <?php echo $this->getChildHtml('related'); ?>
+          </div>
+           <?php endif; ?>                   
+         <?php if($this->getChildHtml('video')): ?>
+          <div class="borderBottom" style="width:100%;float:left;">
+              <?php echo $this->getChildHtml('video'); ?>
+          </div>
+          <?php endif; ?>
+           <?php echo $this->getTierPriceHtml() ?>
+            <?php echo $this->getChildHtml('extrahint') ?>
+          
+            </div>
+
+            <?php echo $this->getChildHtml('other');?>
+
+</form>
+        </div>
+    </div>
+    </div>
+
+   </div> 
+
+<script type="text/javascript">
+    //<![CDATA[
+        var productAddToCartForm = new VarienForm('product_addtocart_form');
+        productAddToCartForm.submit = function(button, url) {
+            if (this.validator.validate()) {
+                var form = this.form;
+                var oldUrl = form.action;
+
+                if (url) {
+                   form.action = url;
+                }
+                var e = null;
+                try {
+                    this.form.submit();
+                } catch (e) {
+                }
+                this.form.action = oldUrl;
+                if (e) {
+                    throw e;
+                }
+
+                if (button && button != 'undefined') {
+                    button.disabled = true;//    Mage::getSingleton('core/session')->unsPincode($pincode);
+                }
+            }
+        }.bind(productAddToCartForm);
+
+        productAddToCartForm.submitLight = function(button, url){
+            if(this.validator) {
+                var nv = Validation.methods;
+                delete Validation.methods['required-entry'];
+                delete Validation.methods['validate-one-required'];
+                delete Validation.methods['validate-one-required-by-name'];
+                // Remove custom datetime validators
+                for (var methodName in Validation.methods) {
+                    if (methodName.match(/^validate-datetime-.*/i)) {
+                        delete Validation.methods[methodName];
+                    }
+                }
+
+                if (this.validator.validate()) {
+                    if (url) {
+                        this.form.action = url;
+                    }
+                    this.form.submit();
+                }
+                Object.extend(Validation.methods, nv);
+            }
+        }.bind(productAddToCartForm);
+		
+                
+                jQuery('#pincode').keyup(function () {     
+                        this.value = this.value.replace(/[^0-9\.]/g,'');
+                      });
+		
+                function check_pincode()
+                {
+                    
+                    var pincode = jQuery("#pincode").val();
+                    if(pincode.length != 6)
+                        {
+                            jQuery("#error-spn").html('<span style="color:#ec2029;text-transform:none;font-size:12px;">Please enter valid 6-digit pincode</span>');
+                            return false;
+                        }
+                   data = "pincode="+pincode+"&category="+<?php echo $current_category_id ?>;
+				jQuery.ajax({
+				  url: '/CCD_v2/pincode/pincode_checker.php',
+				  dataType: 'json',
+				  type : 'post',
+				  data: data,
+				  success: function(response){
+                                                var service = response.service;
+                                                var city = response.city;
+                                                var pincode = response.pincode;
+                                                if(service == 1)
+                                                    {
+                                                        jQuery("#error-spn").html('<span style="color:#0A8A0A;text-transform:none;font-size:12px;">Deliverable to '+city+' pincode '+pincode+'</span>');
+                                                    }
+                                                    else if(service == 0)
+                                                        {
+                                                            jQuery("#error-spn").html("<span style='color:#ec2029;text-transform:none;font-size:12px;'>This pincode is not serviced by us</span>");
+                                                        }
+					  }
+				});
+                }
+    //]]>
+    </script>
+    

@@ -1,0 +1,366 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php $_option = $this->getOption() ?>
+<?php $_optionId = $_option->getId() ?>
+<dt><label<?php if ($_option->getIsRequire()) echo ' class="required"' ?>><?php if ($_option->getIsRequire()) echo '<em>*</em>' ?><?php echo  $this->htmlEscape($_option->getTitle()) ?></label>
+    <?php echo $this->getFormatedPrice() ?></dt>
+<dd<?php if ($_option->decoratedIsLast){?> class="last"<?php }?>>
+
+<?php if ($_option->getType() == Mage_Catalog_Model_Product_Option::OPTION_TYPE_DATE_TIME
+    || $_option->getType() == Mage_Catalog_Model_Product_Option::OPTION_TYPE_DATE): ?>
+
+    <?php echo $this->getDateHtml() ?>
+
+    <?php if (!$this->useCalendar()): ?>
+    <script type="text/javascript">
+    //<![CDATA[
+        Event.observe('options_<?php echo $_optionId ?>_month', 'change', dateOption.reloadMonth.bind(dateOption));
+        Event.observe('options_<?php echo $_optionId ?>_year', 'change', dateOption.reloadMonth.bind(dateOption));
+    //]]>
+    </script>
+    <?php endif; ?>
+
+<?php endif; ?>
+
+<?php if ($_option->getType() == Mage_Catalog_Model_Product_Option::OPTION_TYPE_DATE_TIME
+    || $_option->getType() == Mage_Catalog_Model_Product_Option::OPTION_TYPE_TIME): ?>
+    <span class="time-picker"><?php echo $this->getTimeHtml() ?></span>
+<?php endif; ?>
+
+    <input type="hidden" name="validate_datetime_<?php echo $_optionId ?>" class="validate-datetime-<?php echo $_optionId ?>" value="" />
+    <script type="text/javascript">
+    //<![CDATA[
+<?php if ($_option->getIsRequire()): ?>
+        Validation.addAllThese(
+        [
+               ['validate-datetime-<?php echo $_optionId ?>', '<?php echo $this->jsQuoteEscape( Mage::helper('catalog')->__('This is a required option') )?>', function(v) {
+                   var dateTimeParts = $$('.datetime-picker[id^="options_<?php echo $_optionId ?>"]');
+                   for (var i=0; i < dateTimeParts.length; i++) {
+                       if (dateTimeParts[i].value == "") return false;
+                   }
+                   return true;
+                }]
+        ]
+        );
+<?php else: ?>
+        Validation.add(
+            'validate-datetime-<?php echo $_optionId ?>',
+            '<?php echo $this->jsQuoteEscape( Mage::helper('catalog')->__('Field is not complete') )?>',
+            function(v) {
+                var dateTimeParts = $$('.datetime-picker[id^="options_<?php echo $_optionId ?>"]');
+                var hasWithValue = false, hasWithNoValue = false;
+                var pattern = /day_part$/i;
+                for (var i=0; i < dateTimeParts.length; i++) {
+                   if (! pattern.test(dateTimeParts[i].id)) {
+                       if (dateTimeParts[i].value === "") {
+                           hasWithValue = true;
+                       } else {
+                           hasWithNoValue = true;
+                       }
+                   }
+                }
+                return hasWithValue ^ hasWithNoValue;
+            }
+        );
+<?php endif; ?>
+    //]]>
+    </script>
+</dd>
+
+<?php 
+
+        date_default_timezone_set('Asia/Calcutta');
+        $today = getdate(); 
+        $today_date = date("Y-m-d");
+        $today_ts = strtotime($today_date);
+        
+        $tomorrow = date("Y-m-d", time()+86400); 
+        $tom = explode('-', $tomorrow);
+        $tom_ts = strtotime($tomorrow);
+        
+        $second_day = date("Y-m-d", time()+172800); 
+        $scnd_dy = explode('-', $second_day);
+        $second_day_ts = strtotime($second_day);
+        
+        $tday = date("Ynj", time()+1296000);
+?>
+    <script type="text/javascript">
+        
+        Calendar.prototype._init = function (firstDayOfWeek, date) {
+            var today = new CalendarDateObject(),
+            TY = today.getFullYear(),
+            TM = today.getMonth(),
+            TD = today.getDate();
+            this.table.style.visibility = "hidden";
+            var year = date.getFullYear();
+            if (year < this.minYear) {
+                year = this.minYear;
+                date.setFullYear(year);
+            } else if (year > this.maxYear) {
+                year = this.maxYear;
+                date.setFullYear(year);
+            }
+            this.firstDayOfWeek = firstDayOfWeek;
+            this.date = new CalendarDateObject(date);
+            var month = date.getMonth();
+            var mday = date.getDate();
+            var no_days = date.getMonthDays();
+            // Added By B.C. on date 18/02/2013 
+            var check_flag = false;
+            // END 
+
+            // calendar voodoo for computing the first day that would actually be
+            // displayed in the calendar, even if it's from the previous month.
+            // WARNING: this is magic. ;-)
+            date.setDate(1);
+            var day1 = (date.getDay() - this.firstDayOfWeek) % 7;
+            if (day1 < 0)
+                day1 += 7;
+            date.setDate(-day1);
+            date.setDate(date.getDate() + 1);
+
+            var row = this.tbody.firstChild;
+            var MN = Calendar._SMN[month];
+            var ar_days = this.ar_days = new Array();
+            var weekend = Calendar._TT["WEEKEND"];
+            var dates = this.multiple ? (this.datesCells = {}) : null;
+            for (var i = 0; i < 6; ++i, row = row.nextSibling) {
+                var cell = row.firstChild;
+                if (this.weekNumbers) {
+                    cell.className = "day wn";
+                    cell.innerHTML = date.getWeekNumber();
+                    cell = cell.nextSibling;
+                }
+                row.className = "daysrow";
+                var hasdays = false, iday, dpos = ar_days[i] = [];
+                for (var j = 0; j < 7; ++j, cell = cell.nextSibling, date.setDate(iday + 1)) {
+                    iday = date.getDate();
+                    var wday = date.getDay();
+                    cell.className = "day";
+                    cell.pos = i << 4 | j;
+                    dpos[j] = cell;
+                    var current_month = (date.getMonth() == month);
+                    if (!current_month) {
+                        if (this.showsOtherMonths) {
+                            cell.className += " othermonth";
+                            cell.otherMonth = true;
+                        } else {
+                            cell.className = "emptycell";
+                            cell.innerHTML = "&nbsp;";
+                            cell.disabled = true;
+                            continue;
+                        }
+                    } else {
+                        cell.otherMonth = false;
+                        hasdays = true;
+                    }
+                    cell.disabled = false;
+                    cell.innerHTML = this.getDateText ? this.getDateText(date, iday) : iday;
+                    if (dates)
+                        dates[date.print("%Y%m%d")] = cell;
+                    if (this.getDateStatus) {
+                        var status = this.getDateStatus(date, year, month, iday);
+                        if (this.getDateToolTip) {
+                            var toolTip = this.getDateToolTip(date, year, month, iday);
+                            if (toolTip)
+                                cell.title = toolTip;
+                        }
+                        if (status === true) {
+                            cell.className += " disabled";
+                            cell.disabled = true;
+                        } else {
+                            if (/disabled/i.test(status))
+                                cell.disabled = true;
+                            cell.className += " " + status;
+                        }
+                    }
+                    if (!cell.disabled) {
+                        cell.caldate = new CalendarDateObject(date);
+                        cell.ttip = "_";
+                        if (!this.multiple && current_month
+                            && iday == mday && this.hiliteToday) {
+                            cell.className += " selected";
+                            this.currentDateEl = cell;
+                        }
+                        if (date.getFullYear() == TY &&
+                            date.getMonth() == TM &&
+                            iday == TD) {
+                            cell.className += " today";
+                            cell.ttip += Calendar._TT["PART_TODAY"];
+                        }
+                        if (weekend.indexOf(wday.toString()) != -1)
+                            cell.className += cell.otherMonth ? " oweekend" : " weekend";
+                        if (check_flag){
+                            cell.className += " selected";
+                            this.currentDateEl = cell; 
+                            check_flag=false;
+                        }
+                    }else{
+                        // Added By B.C. on date 18/02/2013 
+                        if (!this.multiple && current_month
+                            && iday == mday && this.hiliteToday) {
+                            check_flag=true;
+                        }
+
+                        
+                    }
+                }
+                if (!(hasdays || this.showsOtherMonths))
+                    row.className = "emptyrow";
+            }
+            this.title.innerHTML = Calendar._MN[month] + ", " + year;
+            this.onSetTime();
+            this.table.style.visibility = "visible";
+            this._initMultipleDates();
+            // PROFILE
+            // this.tooltips.innerHTML = "Generated in " + ((new CalendarDateObject()) - today) + " ms";
+        };
+
+        
+        var inputfielder = 'options_'+<?php echo $_option->getId() ?>+'_date';
+        var inputfieldertrig = 'options_'+<?php echo $_option->getId() ?>+'_date_trig';
+        var inputfieldid = '#options_'+<?php echo $_option->getId() ?>+'_date';      
+        jQuery(inputfieldid).attr('readonly', true);
+        //<!�[CDATA[
+         Calendar.setup({
+                inputField : inputfielder,  //Id of input field where you want to put date
+                ifFormat : "%y-%e-%m",
+                button : inputfieldertrig, //Id of Date picker image
+                align : 'Bl',
+                singleClick : true,
+                onSelect :function()
+                {
+                    currentTime1 = new Date(<?php echo time() * 1000 ?>);
+                    var m = "<?php echo $today['mon']; ?>";
+                    var y = "<?php echo $today['year']; ?>";
+                    var d = "<?php echo $today['mday']; ?>";
+                    var day = "<?php echo $today['wday']; ?>";
+                    var h = "<?php echo $today['hours']; ?>";
+                    var nxtday = "<?php echo $tom['2']; ?>"; 
+                    var today_ts = "<?php echo $today_ts; ?>"; 
+                    
+                    var todaydate = new Date(<?php echo time() * 1000 ?>);                    
+                    todaydate.setDate(todaydate.getDate() + 15);
+                    var targetTime = new Date(todaydate);
+
+                    currentTime = new Date(calendar.date.getTime()); 
+                    var d1=currentTime.getDate();
+                    var m1=parseInt(currentTime.getMonth())+parseInt(1);
+                    var y1=currentTime.getFullYear();
+                    var h1 = currentTime.getHours();
+                    var day1 = currentTime.getDay();
+                    var min1= currentTime.getMinutes();
+                    var tgtime = currentTime.print("%Y-%m-%d");
+                    var timest1 = (Date.parse(tgtime)/1000)-19800;
+                    
+                    if (calendar.dateClicked) 
+                        {                          
+                        if((timest1 < today_ts) || (d1 == d && m == m1 && y == y1) || (d1 < d && m == m1 && y == y1))
+                            {
+                            alert("Delivery cannot be done on selected date");
+//                            document.getElementById('shipping_arrival_date_display').value="";
+                            document.getElementById(inputfielder).value="";
+                            calendar.hide();
+                        }
+                        else if((timest1 - today_ts) >= 1296000){ 
+                          alert("Delivery date cannot be more than 15days from the current date");
+//                          document.getElementById('shipping_arrival_date_display').value="";
+                          document.getElementById(inputfielder).value="";
+                          calendar.hide();
+                        }
+                        else if((d1 == nxtday) && (h>16))
+                            {
+                            alert("Delivery cannot be done on selected date");
+//                            document.getElementById('shipping_arrival_date_display').value="";
+                            document.getElementById(inputfielder).value="";
+                            calendar.hide();   
+                            }
+                        else if(((day == 6) && (h > 16))&&((timest1 - today_ts) <= 172800))
+                            {
+                            alert("Delivery cannot be done on selected date");
+//                            document.getElementById('shipping_arrival_date_display').value="";
+                            document.getElementById(inputfielder).value="";
+                            calendar.hide();   
+                            }
+                        else if((day == 0)&&((timest1 - today_ts) <= 86400))
+                            {
+                            alert("Delivery cannot be done on selected date");
+//                            document.getElementById('shipping_arrival_date_display').value="";
+                            document.getElementById(inputfielder).value="";
+                            calendar.hide();   
+                            }  
+                        else
+                            { 
+//                            document.getElementById('shipping_arrival_date_display').value=y1+"-"+m1+"-"+d1;
+                            document.getElementById(inputfielder).value=y1+"-"+d1+"-"+m1;
+                            calendar.hide();
+                        }
+                    }
+                    else
+                        {
+                        calendar.show();
+                    }
+                },
+                disableFunc : function(date){
+                                currentTime = new Date(date.getTime()); 
+                                var d1=currentTime.getDate();
+                                var m1=parseInt(currentTime.getMonth())+parseInt(1);
+                                var y1=currentTime.getFullYear();
+                                var h1 = currentTime.getHours();
+                                var day1 = currentTime.getDay();
+                                var min1= currentTime.getMinutes();
+                                var tgtime = currentTime.print("%Y-%m-%d")
+                                var timest1 = (Date.parse(tgtime)/1000)-19800;
+                                
+                                currentTime1 = new Date(<?php echo time() * 1000 ?>);
+                                var m = "<?php echo $today['mon']; ?>";
+                                var y = "<?php echo $today['year']; ?>";
+                                var d = "<?php echo $today['mday']; ?>";
+                                var day = "<?php echo $today['wday']; ?>";
+                                var h = "<?php echo $today['hours']; ?>";
+                                var nxtday = "<?php echo $tom['2']; ?>"; 
+                                if((currentTime < currentTime1) || (d1 == d && m == m1 && y == y1) || (d1 < d && m == m1 && y == y1) )
+                                {
+                                    return true;
+                                }
+                                if((d1 == nxtday) && (h>16))
+                                {
+                                    return true;
+                                }
+                                if((day == 6)&& (h > 16) && (timest1 <= (parseInt(today_ts) + 172800)))
+                                {
+                                    return true;
+                                }
+                                if((day == 0)&&(timest1 < (parseInt(today_ts) + 86400)))
+                                {
+                                    return true;
+                                }
+                                
+                              }
+            });
+        //]]>
+    </script>

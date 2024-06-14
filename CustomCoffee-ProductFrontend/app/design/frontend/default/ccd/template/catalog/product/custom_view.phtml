@@ -1,0 +1,624 @@
+﻿<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_modern
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+
+/**
+ * Product view template
+ *<?php echo $this->helper('checkout/cart')->getAddUrl($_product); ?>
+ * @see Mage_Catalog_Block_Product_View
+ * @see Mage_Review_Block_Product_View
+ */
+?>
+<?php $_helper = $this->helper('catalog/output'); ?>
+<?php $_product = $this->getProduct(); $data = $_product->getData(); ?>
+<?php $data = $_product->getOptions(); ?>
+<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('custom_coffee_description')->toHtml(); ?>
+      
+<script type="text/javascript">
+        /* defaults */
+	var blendCat = false;
+	var blendTyp = false;
+        var blendGrain = false;
+        var blendSelIndex = null;
+        var blendCurPosIndex = 0;
+        var blendConf = new Array ();
+ </script>       
+        <?php $i = 0; foreach($data as $optionKey => $optionVal):  ?>
+<?php 
+foreach($optionVal->getValues() as $valuesKey => $valuesVal):
+    if($i < 5){ $i;
+    $optval = $valuesVal->getId();
+    $opttxt = $valuesVal->getTitle();
+    
+    if($optval == 3){
+       $tip85 = "A full-bodied chicory blend with an essence of caramel and a dash of bitter chocolate. A bright mix with a lingering aftertaste. ";
+       $tip90 = "A chicory blend that is slightly strong and bright with flavourful caramel and a hint of dark chocolate that leaves you with a bitter-sweet taste.";
+       $tip100 = "A pure blend of strong, smooth and creamy textures, with bitter-sweet dark chocolate and caramel flavour that finishes on a lingering sweet note.";
+    }
+    if($optval == 4){
+        $tip85 = "A balanced chicory blend of texture and brightness with flavoursome caramel and undertones of malt that finishes on a short-bitter-sweet note. ";
+        $tip90 = "A perfect chicory blend of grit and verve textures, with a dash of caramel and chocolate, and undercurrents of brightness and bitterness for an enduring pleasant experience. ";
+        $tip100 = "A strong and velvety pure blend of savoury caramel and malt, with undercurrents of brightness and chocolate highlights. A long sweet finish.";
+    }
+    if($optval == 5){
+        $tip85 = "A mingling chicory blend of bright, creamy and strong textures interwoven with flavours of dark and milk chocolate, essences of fruits and caramel that finishes of a bitter-sweet note. ";
+       $tip90 = "A chicory blend of gusty and creamy textures with a lingering flavour of dark chocolate and caramel. A bright finish with a hint of fruit and shades of caramelized smoke. ";
+       $tip100 = "A pure blend of strong and bold flavours of dark chocolate and caramel, with caramelized fruits and nuts abound in the cup of bitter-sweet finish.";
+    }
+    if($optval == 6){
+        $tip85 = "Velvety chicory blend with strong textures, infused with flavoursome caramel and dark chocolate for lasting bitter-sweet finish. ";
+       $tip90 = "A balanced chicory blend of rounded, smooth and strong textures, with caramel and dark chocolate flavours that mellows the mood on a bitter-sweet note.";
+       $tip100 = "A pure blend of rounded soft textures with a dash of brightness. Savour a perfect balance of bitter and sweet flavours.";
+    }
+    if($optval == 7){
+        $tip85 = "A bright chicory blend that is slightly strong yet very smooth, complimented with flavoursome bitter chocolate, dash of fruit and caramel for a bitter-sweet symphony. ";
+       $tip90 = "A bright chicory blend of smooth, soft and pleasant textures with sweet undercurrents of fruit, caramel and hint of milk chocolate that finishes on a comforting note.";
+       $tip100 = "A pure blend of soft, smooth and delicate textures infused with bright and sweet flavours of caramel, fruit and flecks of milk chocolate that lifts up your senses.";
+    }
+    
+    if($i < 3){ $type = 0; }else{ $type = 1; }
+    echo "<script type='text/javascript'>";
+        // item 1 //
+    echo "var tempitem = new Object(); tempitem.blend = '".$opttxt."'; tempitem.value = ".$optval.";";
+    echo "tempitem.type = ".$type."; tempitem.tip = new Array(); var temptip = new Object();";    
+    echo "temptip.ctip = '". $tip85 ."'; tempitem.tip.push(temptip); var temptip = new Object();" ;   
+    echo "temptip.ctip = '". $tip90 ."'; tempitem.tip.push(temptip);";    
+    echo "var temptip = new Object(); temptip.ctip = '". $tip100 ."'; tempitem.tip.push(temptip);blendConf.push(tempitem);";    
+    echo "</script>";
+    
+    } $i = $i+1;
+    endforeach; 
+    endforeach; ?>
+<script type="text/javascript">  
+     jQuery.noConflict();
+         // item 2 //
+         /*
+       var tempitem = new Object();
+        tempitem.blend = "P.B.Pure / Blend of 1870";
+        tempitem.value = 13;
+        tempitem.type = 0;
+        tempitem.tip = new Array();
+            // tip @ 85 //
+            var temptip = new Object();
+            temptip.ctip = "tip at 85";
+            tempitem.tip.push(temptip);
+            // tip @ 90 //
+            var temptip = new Object();
+            temptip.ctip = "tip at 90";
+            tempitem.tip.push(temptip);
+            // tip @ 100 //
+            var temptip = new Object();
+            temptip.ctip = "tip at 100";
+            tempitem.tip.push(temptip);
+        
+        blendConf.push(tempitem);
+    */
+        
+	jQuery(document).ready(function( $ ){
+            
+        // set the default value for all the items //
+        $('#blewidsel .blnwidltip p').html(blendConf[0].tip[0].ctip);
+        blendSelIndex = Number($('#select_9').val());
+        $('#options_8_text').val(85);
+        $('#options_7_text').val(15);
+            
+            
+            
+	// for radio & check styling //
+	$('.bwcustinp input').iCheck({
+	  labelHover: false,
+	  cursor: true
+	});
+	
+	// event for blend or strength //
+	$('#blewidtop .bwcustinp input').on('ifClicked', function(event){
+		if($(this).val() == 'bystrength') {
+                    $('#blewidsmchk ul').show();
+                    blendCat = true;
+                    
+                    // populate all the select items //
+                    var blopt = $('#select_9');
+                    blopt.children().remove();
+                    for(var b=0; b<blendConf.length; b++) {
+                        if(blendTyp) {
+                            if(blendConf[b].type == 1) {
+                                blopt.append($("<option />").val(blendConf[b].value).text(blendConf[b].blend));
+                            }
+                        } else {
+                            if(blendConf[b].type == 0) {
+                                blopt.append($("<option />").val(blendConf[b].value).text(blendConf[b].blend));
+                            }
+                        }
+                    }
+                    
+                    // re-skin the selecct box after the data is inserted //
+                    $('.DivSelectyze').remove();
+                    // re-init select //
+                    $('#select_9').Selectyze({
+			theme:'ccdbwsel',
+			effectOpen:'fade',
+			effectClose:'slide'
+                    });
+                    
+                    $('#blcofslidr').val(85, { set: true });
+                    $('#blchislidr').val(15, { set: true });
+                    
+                    blendSelIndex = Number($('#select_9').val());
+                    for(var b=0; b<blendConf.length; b++) {
+                        if(blendConf[b].value == blendSelIndex) {
+                            $('#blewidsel .blnwidltip p').html(blendConf[b].tip[0].ctip);
+                        }
+                    }
+                    
+		} else {
+                    $('#blewidsmchk ul').hide();
+                    blendCat = false;
+                    // populate all the select items //
+                    var blopt = $('#select_9');
+                    blopt.children().remove();
+                    for(var b=0; b<blendConf.length; b++) {
+                        blopt.append($("<option />").val(blendConf[b].value).text(blendConf[b].blend));
+                    }
+                    
+                    // re-skin the selecct box after the data is inserted //
+                    $('.DivSelectyze').remove();
+                    // re-init select //
+                    $('#select_9').Selectyze({
+			theme:'ccdbwsel',
+			effectOpen:'fade',
+			effectClose:'slide'
+                    });
+                    
+                    $('#blcofslidr').val(85, { set: true });
+                    $('#blchislidr').val(15, { set: true });
+                    
+                    blendSelIndex = Number($('#select_9').val());
+                    for(var b=0; b<blendConf.length; b++) {
+                        if(blendConf[b].value == blendSelIndex) {
+                            $('#blewidsel .blnwidltip p').html(blendConf[b].tip[0].ctip);
+                        }
+                    }
+            
+		}
+	});
+	
+	// event for strong or mild //
+	$('#blewidsmchk .bwcustinp input').on('ifClicked', function(event){
+                // console.log($(this).val())
+                var blopt = $('#select_9');
+                if($(this).val() == 'mild') {
+                    $('#blewidsmchk li:first-child .blnumtip').hide();
+                    $('#blewidsmchk li:last-child .blnumtip').show();
+                    blendTyp = true;
+                    
+                    // populate all the mild items //
+                    var blopt = $('#select_9');
+                    blopt.children().remove();
+                    for(var b=0; b<blendConf.length; b++) {
+                        if(blendConf[b].type == 1) {
+                            blopt.append($("<option />").val(blendConf[b].value).text(blendConf[b].blend));
+                        }
+                    }
+                    
+                    // re-skin the selecct box after the data is inserted //
+                    $('.DivSelectyze').remove();
+                    // re-init select //
+                    $('#select_9').Selectyze({
+			theme:'ccdbwsel',
+			effectOpen:'fade',
+			effectClose:'slide'
+                    });
+                    
+                    $('#blcofslidr').val(85, { set: true });
+                    $('#blchislidr').val(15, { set: true });
+                    
+                    blendSelIndex = Number($('#select_9').val());
+                    for(var b=0; b<blendConf.length; b++) {
+                        if(blendConf[b].value == blendSelIndex) {
+                            $('#blewidsel .blnwidltip p').html(blendConf[b].tip[0].ctip);
+                        }
+                    }
+                    
+		} else {
+                    $('#blewidsmchk li:first-child .blnumtip').show();
+                    $('#blewidsmchk li:last-child .blnumtip').hide();
+                    blendTyp = false;
+                    
+                    // populate all the mild items //
+                    var blopt = $('#select_9');
+                    blopt.children().remove();
+                    for(var b=0; b<blendConf.length; b++) {
+                        if(blendConf[b].type == 0) {
+                            blopt.append($("<option />").val(blendConf[b].value).text(blendConf[b].blend));
+                        }
+                    }
+                    
+                    // re-skin the selecct box after the data is inserted //
+                    $('.DivSelectyze').remove();
+                    // re-init select //
+                    $('#select_9').Selectyze({
+			theme:'ccdbwsel',
+			effectOpen:'fade',
+			effectClose:'slide'
+                    });
+                    
+                    $('#blcofslidr').val(85, { set: true });
+                    $('#blchislidr').val(15, { set: true });
+                    
+                    blendSelIndex = Number($('#select_9').val());
+                    for(var b=0; b<blendConf.length; b++) {
+                        if(blendConf[b].value == blendSelIndex) {
+                            $('#blewidsel .blnwidltip p').html(blendConf[b].tip[0].ctip);
+                        }
+                    }
+                    
+		}
+		
+	});
+	
+	// select box styling //
+	$('#select_9').Selectyze({
+		theme:'ccdbwsel',
+		effectOpen:'fade',
+		effectClose:'slide'
+	});
+        $('#blcofslidr').val(92.5, { set: true });
+	$('#blchislidr').val(7.5, { set: true });
+        // select box change event //
+        var selected_blend;
+        var blend_val;
+	$('#select_9').on('change',function(e){
+                
+                // console.log($(this).val() + ' : ' + $('option:selected', this).text());
+		// on change set the slider value //
+                blendSelIndex = Number($(this).val());
+                
+		$('#blcofslidr').val(85, { set: true });
+		$('#blchislidr').val(15, { set: true });
+                
+                for(var b=0; b<blendConf.length; b++) {
+                    if(blendConf[b].value == blendSelIndex) {
+                        $('#blewidsel .blnwidltip p').html(blendConf[b].tip[0].ctip);
+                    }
+                }
+        
+        });
+	
+	/* info tip hover */
+	$('.infotip').hover(
+		function() {
+			$('.blnwidltip', $(this).parent()).show();
+		},
+		function () {
+			$('.blnwidltip', $(this).parent()).hide();
+		}
+	);
+	
+	// event for grind size //
+
+        $('#options_6_2').iCheck('check');
+        var grind = 'fine';
+	$('#blewidsiz .bwcustinp input').on('ifClicked', function(event){
+		// alert(event.type + ' callback');
+                var grindvalue = this.id; 
+                if(grindvalue == "options_6_2"){ grind = "Fine"; }else{ grind = "medium";}
+
+	});
+//        Display slider value in next page
+//	$('#bconper').html(blcofslidr+' coffee<br>'+blchislidr+' chicory');
+	// next button & order click //
+	$('#blnxtbtn, #blstep2').on('click', function(e) {
+		e.preventDefault();           
+                $('#bcongri').html('Grind Size <br>'+ grind);
+                $('#bconbl').html('Your Choice of Blend<br>'+$('option:selected', '#select_9').text());
+                $('#bconper').html($('#options_8_text').val()+'% coffee<br>'+$('#options_7_text').val()+'% chicory');
+		$('#blewidstp1').hide();
+		$('#blewidstp2').show();
+	});
+	
+	// previous tab click //
+	$('#blstep1').on('click', function(e) {
+		e.preventDefault();
+		// alert('next');
+		$('#blewidstp2').hide();
+		$('#blewidstp1').show();
+	});
+	// slider styling //
+	$('#blcofslidr').noUiSlider({
+		start: 85,
+		step: 7.5,
+		range: {
+			'min': 85,
+			'max': 100
+		}
+	});
+	
+	$('#blchislidr').noUiSlider({
+		start: 15,
+		step: 7.5,
+		range: {
+			'min': 0,
+			'max': 15
+		}
+	});
+	
+	// events for coffee slider //
+	$('#blcofslidr').on('slide', function(e){
+		var cofVal = $(this).val();
+		// crappy logic //
+		if(cofVal == '92.50') {
+			$('#options_8_text').val(90);
+                        blendCurPosIndex = 1;
+		} else {
+			$('#options_8_text').val(Number(cofVal));
+		}
+		$('#blchislidr').val((100 - cofVal), { set: true });
+                
+                if(cofVal == 85) {
+                    blendCurPosIndex = 0;
+                }
+                if (cofVal == 100) {
+                    blendCurPosIndex = 2;
+                }
+                
+                // console.log('hello' + blendCurPosIndex);
+                for(var b=0; b<blendConf.length; b++) {
+                    if(blendConf[b].value == blendSelIndex) {
+                       $('#blewidsel .blnwidltip p').html(blendConf[b].tip[blendCurPosIndex].ctip);
+                    }
+                }
+	});
+	
+	$('#blcofslidr').on('set', function(e){
+		var cofVal = $(this).val();
+		// crappy logic //
+		if(cofVal == '92.50') {
+			$('#options_8_text').val(90);
+                        blendCurPosIndex = 1;
+		} else {
+			$('#options_8_text').val(Number(cofVal));
+		}
+                
+                if(cofVal == 85) {
+                    blendCurPosIndex = 0;
+                }
+                if (cofVal == 100) {
+                    blendCurPosIndex = 2;
+                }
+                
+                for(var b=0; b<blendConf.length; b++) {
+                    if(blendConf[b].value == blendSelIndex) {
+                        $('#blewidsel .blnwidltip p').html(blendConf[b].tip[blendCurPosIndex].ctip);
+                    }
+                }
+                // console.log(blendSelIndex);
+	});
+	
+	// events for chicory slider //
+	$('#blchislidr').on('slide', function(e){
+		var chiVal = $(this).val();
+		// crappy logic //
+		if(chiVal == '7.50') {
+			$('#options_7_text').val(10);
+		} else {
+			$('#options_7_text').val(Number(chiVal));
+		}
+		$('#blcofslidr').val((100 - chiVal), { set: true });
+	});
+	
+	$('#blchislidr').on('set', function(e){
+		var chiVal = $(this).val();
+		// crappy logic //
+		if(chiVal == '7.50') {
+			$('#options_7_text').val(10);
+		} else {
+			$('#options_7_text').val(Number(chiVal));
+		}
+	});
+	
+        
+    
+});
+</script>
+
+<script type="text/javascript">
+    var optionsPrice = new Product.OptionsPrice(<?php echo $this->getJsonConfig() ?>);
+</script>
+
+<div style="background-color: #f4f3ef;float:left;width:100%;">
+<div id="messages_product_view"><?php echo $this->getMessagesBlock()->getGroupedHtml() ?></div>
+    <div class="blendwid" id="blendwid">
+        
+    <form action="<?php echo $this->getSubmitUrl($_product) ?>" method="POST" id="product_addtocart_form"<?php if($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+        <div class="no-display">
+                <input type="hidden" name="product" value="<?php echo $_product->getId() ?>" />
+                <input type="hidden" name="related_product" id="related-products-field" value="" />
+        </div>        
+        <div id="blewidhead">
+            <h4><a href="#" id="blstep1">create your own blend</a></h4>
+            <h4><a href="#" id="blstep2">order</a></h4>
+        </div>
+        <div id="blewidcont">
+        <div id="blewidstp1">    
+            <div id="blewidtop">
+            <ul>
+              <li>
+                <label class="bwcustinp">
+                  <input name="blendtype" type="radio" autocomplete="off" id="radblend" value="byblend" checked>
+                  Choose by Blend</label>
+              </li>
+              <li>
+                <label class="bwcustinp">
+                  <input type="radio" name="blendtype" autocomplete="off" id="radstre" value="bystrength">
+                  Choose by Strength</label>
+              </li>
+            </ul>
+            </div> 
+            <hr>
+          <div id="blewidsmchk">
+            <ul>
+              <li>
+                <!--<div class="blnumtip">3 Blends</div>-->
+                <label class="bwcustinp">
+                  <input name="mildorstrong" type="radio" autocomplete="off" id="bmild" value="strong" checked>
+                  Strong</label>
+              </li>
+              <li>
+                <!--<div class="blnumtip">2 Blends</div>-->
+                <label class="bwcustinp">
+                  <input type="radio" name="mildorstrong" autocomplete="off" id="bstrong" value="mild">
+                  Mild</label>
+              </li>
+            </ul>
+          </div>
+            
+            <?php if ($_product->isSaleable() && $this->hasOptions()):?>
+                <?php echo $this->getChildChildHtml('container2', '', true, true) ?>
+            <?php endif; ?>
+            
+            
+          <div id="blewidslidr">
+            <ul>
+              <li>
+                <label class="blnperlab">
+                <span class="bplab">Coffee</span>
+                <div class="infotip"><a href="#"><img src="<?php echo $this->getSkinUrl('images/hlp_btn.png') ?>" width="15" height="15" alt="Info"></a>
+                  <div class="blnwidltip">
+                    <p>A pure coffee blend has no additives to detract or enhance the attributes of the coffee. </p>
+                    <div class="tipbot"></div>
+                  </div>
+                </div>
+                <div id="blcofbg">
+                  <div id="blcofslidr"></div>
+                </div>
+                </label>
+              </li>
+              <li>
+                <label class="blnperlab">
+                <span class="bplab">Chicory</span>
+                <div class="infotip"><a href="#"><img src="<?php echo $this->getSkinUrl('images/hlp_btn.png') ?>" width="15" height="15" alt="Info"></a>
+                  <div class="blnwidltip">
+                    <p>Chicory is the name of a coffee substitute derived from the roasted root of the common chicory plant. It is commonly used as an additive to roasted coffee. It enhances the texture and colour of coffee and also highlights the caramel flavour. </p>
+                    <div class="tipbot"></div>
+                  </div>
+                </div>
+                <div id="blchibg">
+                  <div id="blchislidr"></div>
+                </div>
+                </label>
+              </li>
+            </ul>
+          </div>  
+            <hr>
+          <div id="blewidrat">INR :195.00 <span>per 200 gm</span></div>
+          <div id="blewidnxt">
+            <button type="button" id="blnxtbtn">Next</button>
+          </div> 
+            
+        </div>
+        <div id="blewidstp2">
+          <div id="blewidready"><img src="<?php echo $this->getSkinUrl('images/blnd_ready.png') ?>" width="420" height="60" alt="Your blend is ready!"></div>
+          <hr>
+          <div id="blewidcons">
+            <ul>
+              <li id="bconbl">Your Choice of Blend <br>
+                Blend of 1870</li>
+              <li id="bconper">90% Coffee <br>
+                10% Chicory</li>
+              <li id="bcongri"></li>
+              <li id="bconpri">INR : 195.00 <br>
+                200gm</li>
+            </ul>
+          </div>
+<!--          <div id="blewidname">
+                <label id="blndname">
+                <input type="text" placeholder="Want to Name your Blend" id="options_4_text" class="product-custom-option" name="options[4]" value="" />
+                </label>
+          </div>-->
+          <div id="blewidadd2cart">
+            <button id="add2cart" onclick="productAddToCartForm.submit(this); return false;">Add to Cart</button>
+          </div>
+        </div>    
+    </form>
+
+    </div>
+
+   </div> 
+
+<script type="text/javascript">
+    //<![CDATA[
+        var productAddToCartForm = new VarienForm('product_addtocart_form');
+        productAddToCartForm.submit = function(button, url) {
+            if (this.validator.validate()) {
+                var form = this.form;
+                var oldUrl = form.action;
+
+                if (url) {
+                   form.action = url;
+                }
+                var e = null;
+                try {
+                    this.form.submit();
+                } catch (e) {
+                }
+                this.form.action = oldUrl;
+                if (e) {
+                    throw e;
+                }
+
+                if (button && button != 'undefined') {
+                    button.disabled = true;//    Mage::getSingleton('core/session')->unsPincode($pincode);
+                }
+            }
+        }.bind(productAddToCartForm);
+
+        productAddToCartForm.submitLight = function(button, url){
+            if(this.validator) {
+                var nv = Validation.methods;
+                delete Validation.methods['required-entry'];
+                delete Validation.methods['validate-one-required'];
+                delete Validation.methods['validate-one-required-by-name'];
+                // Remove custom datetime validators
+                for (var methodName in Validation.methods) {
+                    if (methodName.match(/^validate-datetime-.*/i)) {
+                        delete Validation.methods[methodName];
+                    }
+                }
+
+                if (this.validator.validate()) {
+                    if (url) {
+                        this.form.action = url;
+                    }
+                    this.form.submit();
+                }
+                Object.extend(Validation.methods, nv);
+            }
+        }.bind(productAddToCartForm);
+    //]]>
+    </script>
+ 
+    
+    
+   
